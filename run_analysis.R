@@ -1,11 +1,11 @@
 
-# Step0. Download data and unzip it in Data folder
+## Step0. Download data and unzip it in Data folder
 unzipPath <- "./data"
 filePath <- "./data/UCI HAR Dataset/"
 url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 
-if (!file.exists("data")) {
-    dir.create("data")
+if (!file.exists("data/UCI HAR Dataset/")) {
+    dir.create("data/UCI HAR Dataset/")
 }
 if (!file.exists(filePath)) {
     temp <- tempfile()
@@ -15,7 +15,7 @@ if (!file.exists(filePath)) {
 }
 
 
-# Step1. Merges the training and the test sets to create one data set.
+## Step1. Merges the training and the test sets to create one data set.
 trainData <- read.table("./data/UCI HAR Dataset/train/X_train.txt")
 trainLabel <- read.table("./data/UCI HAR Dataset/train/y_train.txt")
 trainSubject <- read.table("./data/UCI HAR Dataset/train/subject_train.txt")
@@ -27,21 +27,21 @@ joinLabel <- rbind(trainLabel, testLabel)
 joinSubject <- rbind(trainSubject, testSubject)
 
 
-# Step2. Extracts only the measurements on the mean and standard deviation for each measurement. 
+## Step2. Extracts only the measurements on the mean and standard deviation for each measurement. 
 features <- read.table("./data/UCI HAR Dataset/features.txt")
 meanStdIndices <- grep("mean\\(\\)|std\\(\\)", features[, 2])
 joinData <- joinData[, meanStdIndices]
-# remove "()"
+## remove "()"
 names(joinData) <- gsub("\\(\\)", "", features[meanStdIndices, 2]) 
-# capitalize M
+## capitalize M
 names(joinData) <- gsub("mean", "Mean", names(joinData))
-# capitalize S
+## capitalize S
 names(joinData) <- gsub("std", "Std", names(joinData)) 
-# remove "-" in column names 
+## remove "-" in column names 
 names(joinData) <- gsub("-", "", names(joinData)) 
 
 
-# Step3. Uses descriptive activity names to name the activities in the data set
+## Step3. Uses descriptive activity names to name the activities in the data set
 activity <- read.table("./data/UCI HAR Dataset/activity_labels.txt")
 activity[, 2] <- tolower(gsub("_", "", activity[, 2]))
 substr(activity[2, 2], 8, 8) <- toupper(substr(activity[2, 2], 8, 8))
@@ -51,14 +51,15 @@ joinLabel[, 1] <- activityLabel
 names(joinLabel) <- "activity"
 
 
-# Step4. Appropriately labels the data set with descriptive activity names. 
+## Step4. Appropriately labels the data set with descriptive activity names. 
 names(joinSubject) <- "subject"
 cleanedData <- cbind(joinSubject, joinLabel, joinData)
-# write out the 1st dataset
+## write out the 1st dataset
+head(cleanedData)
 write.table(cleanedData, "./data/merged_data.txt")
 
 
-# Step5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
+## Step5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
 subjectLen <- length(table(joinSubject)) # 30
 activityLen <- dim(activity)[1] # 6
 columnLen <- dim(cleanedData)[2]
@@ -77,5 +78,5 @@ for(i in 1:subjectLen) {
     }
 }
 head(result)
-# write out the 2nd dataset
+## write out the 2nd dataset
 write.table(result, "./data/data_with_means.txt")
