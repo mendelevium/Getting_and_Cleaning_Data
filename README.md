@@ -1,4 +1,4 @@
-Getting and Cleaning Data: Course Project
+###Getting and Cleaning Data: Course Project
 
 This file describes use run_analysis.R script
 * Use the command source("run_analysis.R") command in RStudio. This will create a Data directory in your workspace and download automatically the dataset and then clean it.
